@@ -7,7 +7,7 @@ public class FieldOfView : MonoBehaviour
     [SerializeField]
     public float viewRadius;
     [SerializeField]
-    [Range(0,359)]
+    [Range(0, 359)]
     public float viewAngle;
 
     public LayerMask targetMask;
@@ -20,6 +20,9 @@ public class FieldOfView : MonoBehaviour
     public float edgeDistThreashold;
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
+
+    [SerializeField]
+    bool visualizeFOV = true;
     private void Start()
     {
         viewMesh = new Mesh();
@@ -29,7 +32,8 @@ public class FieldOfView : MonoBehaviour
     }
     IEnumerator FindTargetsWithDelay(float delay)
     {
-        while(true){
+        while (true)
+        {
             yield return new WaitForSeconds(delay);
             FindVisibleTargets();
         }
@@ -48,7 +52,7 @@ public class FieldOfView : MonoBehaviour
             {
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
                 //performa raycast to check for obsticles
-                if(!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obsticleMask))
+                if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obsticleMask))
                 {
                     visibleTargets.Add(target);
                 }
@@ -58,7 +62,10 @@ public class FieldOfView : MonoBehaviour
 
     private void LateUpdate()
     {
-        DrawFieldOfView();
+        if (visualizeFOV)
+        {
+            DrawFieldOfView();
+        }
     }
 
     void DrawFieldOfView()
@@ -72,13 +79,13 @@ public class FieldOfView : MonoBehaviour
             float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
             //Debug.DrawLine(transform.position, transform.position + DirectionFromAngle(angle, true) * viewRadius, Color.yellow);
             ViewCastInfo newViewCast = ViewCast(angle);
-            if(i > 0)
+            if (i > 0)
             {
                 bool edgeDistThreasholdExceeded = Mathf.Abs(oldViewCast.dst - newViewCast.dst) > edgeDistThreashold;
-                if(oldViewCast.hit != newViewCast.hit || (oldViewCast.hit && newViewCast.hit && edgeDistThreasholdExceeded))
+                if (oldViewCast.hit != newViewCast.hit || (oldViewCast.hit && newViewCast.hit && edgeDistThreasholdExceeded))
                 {
                     EdgeInfo edge = FindEdge(oldViewCast, newViewCast);
-                    if(edge.pointA != Vector3.zero)
+                    if (edge.pointA != Vector3.zero)
                     {
                         viewPoints.Add(edge.pointA);
                     }
@@ -98,7 +105,7 @@ public class FieldOfView : MonoBehaviour
         vertices[0] = Vector3.zero;
         for (int i = 0; i < vertexCount - 1; i++)
         {
-            vertices[i + 1] = transform.InverseTransformPoint( viewPoints[i]);
+            vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]);
             if (i < vertexCount - 2)
             {
                 triangles[i * 3] = 0;
@@ -140,7 +147,7 @@ public class FieldOfView : MonoBehaviour
     {
         Vector3 dir = DirectionFromAngle(globalAngle, true);
         RaycastHit hit;
-        if(Physics.Raycast(transform.position, dir, out hit, viewRadius, obsticleMask))
+        if (Physics.Raycast(transform.position, dir, out hit, viewRadius, obsticleMask))
         {
             return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
         }
@@ -156,7 +163,7 @@ public class FieldOfView : MonoBehaviour
         {
             angleInDegrees += transform.eulerAngles.y;
         }
-        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad) , 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
     public struct ViewCastInfo
