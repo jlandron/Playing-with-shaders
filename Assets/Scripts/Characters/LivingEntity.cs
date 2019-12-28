@@ -7,7 +7,7 @@ namespace Shooter.Characters
         [Header("Living Entity properties")]
         [SerializeField] float startingHealth = 3;
         [SerializeField] float currentHealth;
-        [SerializeField] protected bool dead = true;
+        [SerializeField] protected bool dead = false;
         [SerializeField] protected bool tookDamage = false;
         [SerializeField] float memoryTime = 5;
         [SerializeField] float timeDamageWillBeForgotten;
@@ -54,17 +54,14 @@ namespace Shooter.Characters
                 }
                 else
                 {
-                    Destroy(this.gameObject);
+                    Destroy(gameObject);
                 }
             }
         }
         public void Revive()
         {
-            if (dead)
-            {
-                dead = false;
-                gameObject.SetActive(true);
-            }
+            dead = false;
+            gameObject.SetActive(true);
         }
     }
 }

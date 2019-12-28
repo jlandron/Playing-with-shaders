@@ -5,25 +5,24 @@ namespace Shooter.Characters
 {
     public class FieldOfView : MonoBehaviour
     {
-        [SerializeField]
-        public float viewRadius;
-        [SerializeField]
-        [Range(0, 359)]
-        public float viewAngle;
+        [Header("FOV properties")]
+        [SerializeField] public float viewRadius;
+        [Range(0, 360)]
+        [SerializeField] public float viewAngle;
 
-        public LayerMask targetMask;
-        public LayerMask obsticleMask;
+        [SerializeField] LayerMask targetMask;
+        [SerializeField] LayerMask obsticleMask;
         [HideInInspector]
         public List<Transform> visibleTargets;
-
-        public float meshResolution;
-        public int edgeResolveIterations;
-        public float edgeDistThreashold;
-        public MeshFilter viewMeshFilter;
+        [Header("Mesh properties")]
+        [SerializeField] bool visualizeFOV = true;
+        [SerializeField] float meshResolution;
+        [SerializeField] int edgeResolveIterations;
+        [SerializeField] float edgeDistThreashold;
+        [SerializeField] float maskCutawayDistance = 0.1f;
+        [SerializeField] MeshFilter viewMeshFilter;
         Mesh viewMesh;
 
-        [SerializeField]
-        bool visualizeFOV = true;
         private void Start()
         {
             viewMesh = new Mesh();
@@ -106,7 +105,7 @@ namespace Shooter.Characters
             vertices[0] = Vector3.zero;
             for (int i = 0; i < vertexCount - 1; i++)
             {
-                vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]);
+                vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i] ) + Vector3.forward * maskCutawayDistance;
                 if (i < vertexCount - 2)
                 {
                     triangles[i * 3] = 0;

@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 3279524644986510425}
   - component: {fileID: 3279524644986510424}
   m_Layer: 9
-  m_Name: Zomble
+  m_Name: ZombleBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3279524644986510416}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.85, y: 1.4825675, z: 18.71}
+  m_LocalPosition: {x: 10.85, y: 1, z: 18.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3279524645040310070}
@@ -231,6 +231,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingHealth: 3
+  currentHealth: 0
+  dead: 0
   tookDamage: 0
   memoryTime: 5
   timeDamageWillBeForgotten: 0
@@ -241,7 +243,11 @@ MonoBehaviour:
   wanderTimerMax: 10
   wanderTimerMin: 1
   wanderTimer: 5
-  wanderTarget: {fileID: 0}
+  attackDistanceThreashold: 1.5
+  timeBetweenAttacks: 1
+  attackSpeed: 3
+  attackPower: 2
+  currentState: 0
 --- !u!54 &3279524644986510425
 Rigidbody:
   m_ObjectHideFlags: 0

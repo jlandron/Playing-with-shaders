@@ -50,6 +50,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 768
   damage: 1
+  skinWidth: 0.2
 --- !u!1 &3799658199989093275
 GameObject:
   m_ObjectHideFlags: 0
