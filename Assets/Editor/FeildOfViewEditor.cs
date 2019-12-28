@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Shooter.Characters;
+using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(FieldOfView))]
