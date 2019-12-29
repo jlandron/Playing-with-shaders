@@ -6,11 +6,12 @@ namespace Shooter.Characters
     {
         [Header("Living Entity properties")]
         [SerializeField] float startingHealth = 3;
-        [SerializeField] float currentHealth;
+        [SerializeField] protected float currentHealth;
         [SerializeField] protected bool dead = false;
         [SerializeField] protected bool tookDamage = false;
         [SerializeField] float memoryTime = 5;
         [SerializeField] float timeDamageWillBeForgotten;
+
         public event System.Action OnDeath;
         protected virtual void Start()
         {
@@ -23,11 +24,11 @@ namespace Shooter.Characters
                 tookDamage = false;
             }
         }
-        public void TakeHit(float damageToTake, RaycastHit hit)
+        public virtual void TakeHit(float damageToTake, Vector3 hitPoint, Vector3 hitDirection)
         {
             TakeDamage(damageToTake);
         }
-        public void TakeDamage(float damageToTake)
+        public virtual void TakeDamage(float damageToTake)
         {
             print(gameObject.name + " took " + damageToTake + " damage.");
             currentHealth -= damageToTake;
@@ -39,7 +40,8 @@ namespace Shooter.Characters
             timeDamageWillBeForgotten = Time.time + memoryTime;
         }
 
-        private void Die(bool pooled = false)
+        [ContextMenu("Self Destruct")]
+        private void Die()
         {
             if (!dead)
             {
@@ -48,14 +50,10 @@ namespace Shooter.Characters
                 {
                     OnDeath();
                 }
-                if (pooled)
-                {
-                    gameObject.SetActive(false);
-                }
-                else
-                {
-                    Destroy(gameObject);
-                }
+
+                Destroy(gameObject);
+
+
             }
         }
         public void Revive()

@@ -39,6 +39,9 @@ namespace Shooter.Characters
         [Header("State Machine")]
         [SerializeField] State currentState = State.Wander;
 
+        [Header("Effects")]
+        [SerializeField] ParticleSystem deathEffect;
+        
         private float _timer;
 
         Transform target;
@@ -46,6 +49,19 @@ namespace Shooter.Characters
         {
             base.Start();
             myCollisionRadius = GetComponent<CapsuleCollider>().radius;
+        }
+
+        public override void TakeHit(float damageToTake, Vector3 hitPoint, Vector3 hitDirection)
+        {
+            if(damageToTake >= currentHealth)
+            {
+                Destroy(Instantiate(deathEffect, hitPoint, Quaternion.FromToRotation(Vector3.forward, hitDirection)).gameObject, deathEffect.startLifetime);
+            }
+            base.TakeHit(damageToTake, hitPoint, hitDirection);
+        }
+        public override void TakeDamage(float damageToTake)
+        {
+            base.TakeDamage(damageToTake);
         }
         void OnEnable()
         {

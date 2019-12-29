@@ -47,16 +47,16 @@ namespace Shooter.Weapons
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, moveDist + skinWidth, collisionLayers, QueryTriggerInteraction.Collide))
             {
-                OnHitObject(hit);
+                OnHitObject(hit.collider, hit.point);
             }
         }
-        private void OnHitObject(RaycastHit hit)
+        private void OnHitObject(Collider c, Vector3 hitPoint)
         {
-            IDamagable damagable = hit.collider.GetComponent<IDamagable>();
+            IDamagable damagable = c.GetComponent<IDamagable>();
             if (damagable != null)
             {
                 Debug.Log("Projectile hit damagable!");
-                damagable.TakeHit(Damage, hit);
+                damagable.TakeHit(Damage, hitPoint, transform.forward );
             }
 
             this.gameObject.SetActive(false);

@@ -45,6 +45,7 @@ namespace Shooter.Characters
 
         private void FixedUpdate()
         {
+            
             rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
         }
     }

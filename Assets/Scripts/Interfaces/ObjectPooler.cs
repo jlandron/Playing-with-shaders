@@ -5,61 +5,61 @@ using UnityEngine;
 public class ObjectPooler : MonoBehaviour
 {
     [Header("Object pool properties")]
-    protected List<GameObject> pooledObects;
-    [SerializeField] protected GameObject objectToPool;
-    [SerializeField] protected int amountToPool;
-    [SerializeField] protected bool shouldExpand = true;
+    protected List<GameObject>[] pools;
+    [SerializeField] protected GameObject[] objectsToPool;
+    [SerializeField] protected int[] amountsToPool;
+    [SerializeField] protected bool[] shouldExpand;
 
-    int poolLocation = 0;
+    int[] poolLocations;
 
     protected virtual void Start()
     {
-        pooledObects = new List<GameObject>();
-        for (int i = 0; i < amountToPool; i++)
+        poolLocations = new int[objectsToPool.Length];
+        pools = new List<GameObject>[objectsToPool.Length];
+        for (int poolNum = 0; poolNum < objectsToPool.Length; poolNum++)
         {
-            AddObjectToPool();
+            pools[poolNum] = new List<GameObject>();
+            poolLocations[poolNum] = 0;
+            for (int i = 0; i < amountsToPool[poolNum]; i++)
+            {
+                AddObjectToPool(poolNum);
+            }
         }
     }
 
-    protected GameObject GetPooledObject()
+    protected GameObject GetPooledObject(int poolNumber)
     {
-        //for (int i = 0; i < pooledObects.Count; i++)
-        //{
-        //    if (!pooledObects[i].activeInHierarchy)
-        //    {
-        //        return pooledObects[i];
-        //    }
-        //}
         int pass = 0;
         while (true)
         {
             pass++;
-            if (!pooledObects[poolLocation].activeInHierarchy)
+            if (!pools[poolNumber][poolLocations[poolNumber]].activeInHierarchy)
             {
-                return pooledObects[poolLocation];
+                return pools[poolNumber][poolLocations[poolNumber]];
             }
-            poolLocation = (poolLocation + 1) % pooledObects.Count;
-            if(pass >= pooledObects.Count)
+            poolLocations[poolNumber] = (poolLocations[poolNumber] + 1) % pools[poolNumber].Count;
+            if(pass >= pools[poolNumber].Count)
             {
                 break;
             }
         }
-        Debug.Log("No more objects!!");
-        if (shouldExpand)
+        //Debug.Log("No more objects!!");
+        if (shouldExpand[poolNumber])
         {
-            AddObjectToPool();
-            return pooledObects[pooledObects.Count - 1];
+            AddObjectToPool(poolNumber);
+            int poolSize = pools[poolNumber].Count;
+            return pools[poolNumber][poolSize - 1];
         }
         else
         {
             return null;
         }
     }
-    void AddObjectToPool()
+    void AddObjectToPool(int poolNumber)
     {
-        GameObject obj = Instantiate(objectToPool);
+        GameObject obj = Instantiate(objectsToPool[poolNumber]);
         obj.SetActive(false);
-        pooledObects.Add(obj);
+        pools[poolNumber].Add(obj);
     }
 }
 
